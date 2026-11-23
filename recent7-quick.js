@@ -1,6 +1,31 @@
-// recent7-quick.js：對照用。只用一句話請 AI 寫的版本放這裡。
-// 函式名稱一樣叫 recent7，輸入、輸出的格式跟 recent7.js 一樣（見 README.md）。
-
 function recent7(records, today) {
-  throw new Error('還沒做');
+  const todayDate = new Date(today + 'T00:00:00');
+  const sevenDaysAgo = new Date(todayDate);
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+  let minutes = 0;
+  let count = 0;
+
+  for (const record of records) {
+    if (!record || typeof record.log_date !== 'string') {
+      continue;
+    }
+
+    const logDate = new Date(record.log_date + 'T00:00:00');
+    if (isNaN(logDate.getTime())) {
+      continue;
+    }
+
+    if (logDate < sevenDaysAgo || logDate > todayDate) {
+      continue;
+    }
+
+    count++;
+
+    if (typeof record.minutes === 'number' && record.minutes >= 0) {
+      minutes += record.minutes;
+    }
+  }
+
+  return { minutes, count };
 }
