@@ -1,9 +1,35 @@
-// recent7.js：照 rules.md 寫的版本
-// 輸入：records＝一串紀錄，每筆像 { log_date: '2026-11-23', minutes: 30 }（minutes 可能是 null）
-//       today＝今天的日期，例如 '2026-11-23'
-// 輸出：{ minutes: 總共幾分鐘, count: 幾筆 }
-// 格式說明在 README.md；要怎麼算看 rules.md。
-
 function recent7(records, today) {
-  throw new Error('還沒做');
+  const todayDate = new Date(today + 'T00:00:00Z');
+  const startDate = new Date(todayDate);
+  startDate.setUTCDate(startDate.getUTCDate() - 6);
+
+  let minutes = 0;
+  let count = 0;
+
+  for (const record of records) {
+    if (!record || typeof record.log_date !== 'string') {
+      continue;
+    }
+
+    const logDate = new Date(record.log_date + 'T00:00:00Z');
+
+    if (
+      isNaN(logDate.getTime()) ||
+      logDate < startDate ||
+      logDate > todayDate
+    ) {
+      continue;
+    }
+
+    const value = record.minutes;
+
+    if (!Number.isInteger(value) || value < 0) {
+      continue;
+    }
+
+    minutes += value;
+    count += 1;
+  }
+
+  return { minutes: minutes, count: count };
 }
